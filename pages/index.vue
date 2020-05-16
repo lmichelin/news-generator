@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="columns is-mobile">
-      <card title="Free" icon="github-circle">
+      <card title="Free" icon="github">
         Open source on
         <a href="https://github.com/buefy/buefy">
           GitHub
