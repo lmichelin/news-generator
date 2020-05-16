@@ -1,46 +1,66 @@
 <template>
   <section class="section">
-    <div class="columns is-mobile">
-      <card title="Free" icon="github">
-        Open source on
-        <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
-      </card>
-
-      <card title="Responsive" icon="cellphone-link">
-        <b class="has-text-grey">
-          Every
-        </b>
-        component is responsive
-      </card>
-
-      <card title="Modern" icon="alert-decagram">
-        Built with
-        <a href="https://vuejs.org/">
-          Vue.js
-        </a>
-        and
-        <a href="http://bulma.io/">
-          Bulma
-        </a>
-      </card>
-
-      <card title="Lightweight" icon="arrange-bring-to-front">
-        No other internal dependency
-      </card>
-    </div>
+    <b-field label="Titre">
+      <b-input ref="title" v-model="title" required placeholder="Breaking news : ..."></b-input>
+    </b-field>
+    <b-field label="Description">
+      <b-input v-model="description" required></b-input>
+    </b-field>
+    <b-field label="Image">
+      <b-input v-model="imageUrl"></b-input>
+    </b-field>
+    <b-button v-if="shareable" :disabled="!title || !description" @click="share">
+      Partager l'article
+    </b-button>
+    <a v-if="title && description" target="_blank" :href="articleUrl">
+      <b-button>
+        Lien vers l'article
+      </b-button>
+    </a>
   </section>
 </template>
 
 <script>
-import Card from '~/components/Card'
+import { stringToBase64 } from '~/utils'
 
 export default {
-  name: 'HomePage',
-
-  components: {
-    Card,
+  name: 'Article',
+  data() {
+    return {
+      shareable: false,
+      title: '',
+      description: '',
+      imageUrl: 'https://picsum.photos/200/300',
+    }
+  },
+  computed: {
+    articleUrl() {
+      return `/${encodeURIComponent(
+        this.title
+          .split('-')
+          .join('_')
+          .split(' ')
+          .join('-'),
+      )}/${stringToBase64(
+        JSON.stringify({
+          d: this.description,
+          i: this.imageUrl,
+        }),
+      )}`
+    },
+  },
+  mounted() {
+    this.shareable = !!navigator.share
+    this.$refs.title.focus()
+  },
+  methods: {
+    share() {
+      navigator.share({
+        title: this.title,
+        text: this.description,
+        url: this.articleUrl,
+      })
+    },
   },
 }
 </script>
