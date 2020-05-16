@@ -40,7 +40,7 @@ export default {
   name: 'HomePage',
 
   components: {
-    Card
-  }
+    Card,
+  },
 }
 </script>
